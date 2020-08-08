@@ -1,0 +1,50 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Apr  6 19:40:04 2020
+
+@author: HP
+"""
+
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Apr  6 19:32:26 2020
+
+@author: HP
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+#IMPORTING THE DATASET
+data=pd.read_csv("Churn_Modelling.csv")
+x=data.iloc[:,3:13].values
+y=data.iloc[:,13].values
+
+
+#Categorical Variables
+from sklearn.preprocessing import LabelEncoder,OneHotEncoder
+labelencoder_X_1=LabelEncoder()
+x[:,1]=labelencoder_X_1.fit_transform(x[:,1])
+labelencoder_X_2=LabelEncoder()
+x[:,2]=labelencoder_X_2.fit_transform(x[:,2])
+onehotencoder=OneHotEncoder(categorical_features=[1])
+x=onehotencoder.fit_transform(x).toarray()
+x=x[:,1:]
+
+
+#Splitting the train and test sets
+from sklearn.cross_validation import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=0)
+
+#Feature scaling
+from sklearn.preprocessing import StandardScaler
+sc_x=StandardScaler()
+x_train=sc_x.fit_transform(x_train)
+x_test=sc_x.transform(x_test)
+
+import keras
+from keras.models import Sequential
+from keras.layers import Dense
+
+classifier=Sequential()
